@@ -272,6 +272,7 @@ if strcmp(bmiMode, "initialize") || strcmp(runMode, "full")
 
     %% 13. create output files and
     [Output_dir, fnames] = io.create_output_files_binary(parameter_file, SiteProperties.sitename, path_of_code, path_input, path_output, spectral, options);
+    diary([Output_dir, 'log.txt']);
 
     %% Initialize Temperature, Matric potential and soil air pressure.
     % Define soil variables for StartInit
@@ -862,3 +863,4 @@ end_time = clock;
 simtime_min = etime(end_time, start_time) / 60;
 simtime_hr = simtime_min / 24;
 disp(['Simulation time is : ' num2str(simtime_hr) ' hrs (' num2str(simtime_min) ' minutes)']);
+diary off
