@@ -539,6 +539,7 @@ function biochem_out = biochemical(biochem_in, sfactor, Ci_input)
     biochem_out.Ja      = Ja;
     biochem_out.ps      = ps; % photochemical yield
     biochem_out.ps_rel  = ps_rel;   % degree of ETR saturation 'x' (van der Tol e.a. 2014)
+    biochem_out.CO2_per_electron = CO2_per_electron;
 
     % fluoresence outputs:
     % note on Kn: technically, NPQ = (Fm - Fm')/Fm' = Kn/(Kf + Kd);

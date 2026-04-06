@@ -1,7 +1,7 @@
 function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi, vmax, options, fluxes, meteo, iter, thermal, ...
-                                    spectral, gap, profiles, Sim_Theta_U, Sim_Temp, Trap, Evap, WaterStress, WaterPotential, ...
+                                    spectral, gap, profiles, Sim_Theta_U, Sim_Temp, Trap, Evap, WaterStressFactor, WaterPotential, ...
                                     Sim_hh, Sim_qlh, Sim_qlt, Sim_qvh, Sim_qvt, Sim_qla, Sim_qva, Sim_qtot, ...
-                                    ForcingData, RS, RWUs, RWUg)
+                                    ForcingData, RS, RWUs, RWUg, elecFluo)
 
     %% OUTPUT DATA
     % author C. Van der Tol
@@ -40,7 +40,7 @@ function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi
     fwrite(f.Sim_Temp_file, Sim_Temp_out, 'double');
 
     %% Water stress factor
-    waterStressFactor_out = [k xyt.year(k) xyt.t(k) WaterStress.soil];
+    waterStressFactor_out = [k xyt.year(k) xyt.t(k) WaterStressFactor.soil, WaterStressFactor.plant];
     n_col.waterStressFactor = length(waterStressFactor_out);
     fwrite(f.waterStressFactor_file, waterStressFactor_out, 'double');
 
@@ -48,6 +48,14 @@ function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi
     waterPotential_out = [k xyt.year(k) xyt.t(k) WaterPotential.leaf];
     n_col.waterPotential = length(waterPotential_out);
     fwrite(f.waterPotential_file, waterPotential_out, 'double');
+
+    %% electron transport
+    electronTransport_out = [k, xyt.year(k), xyt.t(k), elecFluo.JaTot, elecFluo.phiPsiiTot, elecFluo.KnTot, ...
+                            elecFluo.KpTot, elecFluo.NPQTot, elecFluo.phiFTot, elecFluo.SIFTot, elecFluo.qETot, elecFluo.qQTot, ...
+                            elecFluo.fo0Tot,elecFluo.fm0Tot, elecFluo.foTot, elecFluo.fmTot, elecFluo.Fm_FoTot,elecFluo.Ft_FoTot, ...
+                            elecFluo.etaTot, elecFluo.co2PerElecTot, elecFluo.VcTot, elecFluo.VeTot, elecFluo.VsTot, elecFluo.gsTot, elecFluo.CiTot];
+    n_col.electronTransport = length(electronTransport_out);
+    fwrite(f.electronTransport_file, electronTransport_out, 'double');
 
     %% Soil matric head, added by Mostafa
     Sim_hh_out =  [Sim_hh(k, :)];
@@ -84,19 +92,19 @@ function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi
     fwrite(f.Sim_qtot_file, Sim_qtot_out, 'double');
 
     %% Spectrum (added on 19 September 2008)
-    spectrum_hemis_optical_out =  rad.Eout_;
-    n_col.spectrum_hemis_optical = length(spectrum_hemis_optical_out);
-    fwrite(f.spectrum_hemis_optical_file, spectrum_hemis_optical_out, 'double');
+    % spectrum_hemis_optical_out =  rad.Eout_;
+    % n_col.spectrum_hemis_optical = length(spectrum_hemis_optical_out);
+    % fwrite(f.spectrum_hemis_optical_file, spectrum_hemis_optical_out, 'double');
 
-    spectrum_obsdir_optical_out =  [rad.Lo_'];
-    n_col.spectrum_obsdir_optical = length(spectrum_obsdir_optical_out);
-    fwrite(f.spectrum_obsdir_optical_file, spectrum_obsdir_optical_out, 'double');
+    % spectrum_obsdir_optical_out =  [rad.Lo_'];
+    % n_col.spectrum_obsdir_optical = length(spectrum_obsdir_optical_out);
+    % fwrite(f.spectrum_obsdir_optical_file, spectrum_obsdir_optical_out, 'double');
 
     if options.calc_ebal
 
-        spectrum_obsdir_BlackBody_out =  [rad.LotBB_'];
-        n_col.spectrum_obsdir_BlackBody = length(spectrum_obsdir_BlackBody_out);
-        fwrite(f.spectrum_obsdir_BlackBody_file, spectrum_obsdir_BlackBody_out, 'double');
+        % spectrum_obsdir_BlackBody_out =  [rad.LotBB_'];
+        % n_col.spectrum_obsdir_BlackBody = length(spectrum_obsdir_BlackBody_out);
+        % fwrite(f.spectrum_obsdir_BlackBody_file, spectrum_obsdir_BlackBody_out, 'double');
 
         if options.calc_planck
 
@@ -111,15 +119,15 @@ function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi
         end
     end
 
-    irradiance_spectra_out =  [meteo.Rin * (rad.fEsuno + rad.fEskyo)'];
-    n_col.irradiance_spectra = length(irradiance_spectra_out);
-    fwrite(f.irradiance_spectra_file, irradiance_spectra_out, 'double');
+    % irradiance_spectra_out =  [meteo.Rin * (rad.fEsuno + rad.fEskyo)'];
+    % n_col.irradiance_spectra = length(irradiance_spectra_out);
+    % fwrite(f.irradiance_spectra_file, irradiance_spectra_out, 'double');
 
-    reflectance = pi * rad.Lo_ ./ (rad.Esun_ + rad.Esky_);
-    reflectance(spectral.wlS > 3000) = NaN;
-    reflectance_out =  [reflectance'];
-    n_col.reflectance = length(reflectance_out);
-    fwrite(f.reflectance_file, reflectance_out, 'double');
+    % reflectance = pi * rad.Lo_ ./ (rad.Esun_ + rad.Esky_);
+    % reflectance(spectral.wlS > 3000) = NaN;
+    % reflectance_out =  [reflectance'];
+    % n_col.reflectance = length(reflectance_out);
+    % fwrite(f.reflectance_file, reflectance_out, 'double');
     %% input and parameter values (added June 2012)
     ScopeParametersNames = fieldnames(ScopeParameters);
     for i = 1:length(ScopeParametersNames)
@@ -229,9 +237,9 @@ function n_col = output_data_binary(f, k, xyt, rad,  canopy, ScopeParameters, vi
 
         end
     end
-    BOC_irradiance_out  =  [rad.Emin_(canopy.nlayers + 1, :), rad.Emin_(canopy.nlayers + 1, :) + (rad.Esun_ * gap.Ps(canopy.nlayers + 1)')'];
-    n_col.BOC_irradiance = length(BOC_irradiance_out);
-    fwrite(f.BOC_irradiance_file, BOC_irradiance_out, 'double');
+    % BOC_irradiance_out  =  [rad.Emin_(canopy.nlayers + 1, :), rad.Emin_(canopy.nlayers + 1, :) + (rad.Esun_ * gap.Ps(canopy.nlayers + 1)')'];
+    % n_col.BOC_irradiance = length(BOC_irradiance_out);
+    % fwrite(f.BOC_irradiance_file, BOC_irradiance_out, 'double');
 
     %%
     if options.calc_directional && options.calc_ebal

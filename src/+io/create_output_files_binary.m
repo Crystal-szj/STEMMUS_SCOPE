@@ -29,6 +29,7 @@ function [Output_dir, fnames] = create_output_files_binary(parameter_file, siten
     fnames.Sim_Temp_file = fullfile(Output_dir, 'Sim_Temp.bin');  % soil temperature
     fnames.waterStressFactor_file = fullfile(Output_dir, 'waterStressFactor.bin');
     fnames.waterPotential_file = fullfile(Output_dir, 'waterPotential.bin'); % leaf water potential
+    fnames.electronTransport_file = fullfile(Output_dir, 'electronTransport.bin'); % add output in STEMMUS-SCOPE to validate MLROC electron transport rate simulation
     fnames.Sim_hh_file = fullfile(Output_dir, 'Sim_hh.bin'); % soil matric potential
     fnames.Sim_qlh_file = fullfile(Output_dir, 'qlh.bin'); % liquid flux due to matric potential gradient
     fnames.Sim_qlt_file = fullfile(Output_dir, 'qlt.bin'); % liquid flux due to temprature gradient

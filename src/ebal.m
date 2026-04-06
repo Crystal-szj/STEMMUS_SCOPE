@@ -1,4 +1,4 @@
-function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFactor, WaterPotential, TestPHS]             ...
+function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFactor, WaterPotential, TestPHS, elecFluo]             ...
          = ebal(iter, options, spectral, rad, gap, leafopt,  ...
                 angles, meteo, soil, canopy, leafbio, xyt, k, profiles, Delt_t, ...
                 Rl, SoilVariables, VanGenuchten, InitialValues, ModelSettings, GroundwaterSettings,...
@@ -304,7 +304,28 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
         rcwh                = biochem_out.rcw;
         qEh                 = biochem_out.qE; % vCaemmerer- Magnani does not generate this parameter (dummy value)
         Knh                 = biochem_out.Kn;
-    	VPDh                = biochem_out.VPD_l2b;												   
+    	VPDh                = biochem_out.VPD_l2b;		
+        
+        Jah                 = biochem_out.Ja;
+        phiPh               = biochem_out.ps;
+        phiFh               = biochem_out.fs;
+        qQh                 = biochem_out.qQ;
+        gsh                 = biochem_out.gs;
+        Vch                 = biochem_out.Vc;
+        Veh                 = biochem_out.Ve;
+        Vsh                 = biochem_out.Vs;
+        co2PerElech         = biochem_out.CO2_per_electron;
+        Kdh                 = biochem_out.Kd;
+        Kfh                 = biochem_out.Kf;
+        Kph                 = biochem_out.Kp;
+        NPQh                = biochem_out.NPQ;
+        SIFh                = biochem_out.SIF;
+        fo0h                = biochem_out.fo0;
+        fm0h                = biochem_out.fm0;
+        foh                 = biochem_out.fo;
+        fmh                 = biochem_out.fm;
+        Fm_Foh              = biochem_out.Fm_Fo;
+        Ft_Foh              = biochem_out.Ft_Fo;
 
 
         % for sunlit leaves
@@ -322,6 +343,8 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
             biochem_out = biochemical(biochem_in, sfactor, Ci_input);
         end
 
+        
+
         Au                  = biochem_out.A; % Ag? or A?
         Auu                  = biochem_out.Ag;   % GPP calculation.
         Ciu                 = biochem_out.Ci;
@@ -330,6 +353,30 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
         qEu                 = biochem_out.qE;
         Knu                 = biochem_out.Kn;
         VPDu                = biochem_out.VPD_l2b;
+
+
+        Jau                 = biochem_out.Ja;
+        phiPu               = biochem_out.ps;
+        phiFu               = biochem_out.fs;
+        qQu                 = biochem_out.qQ;
+        gsu                 = biochem_out.gs;
+        Vcu                 = biochem_out.Vc;
+        Veu                 = biochem_out.Ve;
+        Vsu                 = biochem_out.Vs;
+        co2PerElecu         = biochem_out.CO2_per_electron;
+        Kdu                 = biochem_out.Kd;
+        Kfu                 = biochem_out.Kf;
+        Kpu                 = biochem_out.Kp;
+        NPQu                = biochem_out.NPQ;
+        SIFu                = biochem_out.SIF;
+        fo0u                = biochem_out.fo0;
+        fm0u                = biochem_out.fm0;
+        fou                 = biochem_out.fo;
+        fmu                 = biochem_out.fm;
+        Fm_Fou              = biochem_out.Fm_Fo;
+        Ft_Fou              = biochem_out.Ft_Fo;
+
+    
 
         Pinh                = rad.Pnh;
         Pinu                = rad.Pnu;
@@ -619,6 +666,7 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
     Pntot_Cab       = LAI * (Fc * Pinh_Cab + equations.meanleaf(canopy, Pinu_Cab, 'angles_and_layers', Ps)); % net PAR leaves
     Rntot_PAR       = LAI * (Fc * Rnh_PAR  + equations.meanleaf(canopy, Rnu_PAR, 'angles_and_layers', Ps)); % net PAR leaves
     aPAR_Cab_eta        = LAI * (Fc * (profiles.etah .* Rnh_PAR) + equations.meanleaf(canopy, profiles.etau .* Rnu_PAR, 'angles_and_layers', Ps));
+
     % ... green ePAR * relative fluorescence emission efficiency
     % [Delta_Rltot] = Root_properties(Rl, Ac, rroot, frac, bbx, KT, DeltZ, sfactor, LAI_msr);
     % Delta_Rl = fc*Delta_Rltot;
@@ -686,6 +734,30 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
     fluxes.Au     = Au;
     fluxes.Ah     = Ah;
 
+    elecFluo.JaTot = Fc * Jah + equations.meanleaf(canopy, Jau, 'angles_and_layers', Ps); % total electron transport rate
+    elecFluo.phiPsiiTot = Fc * phiPh + equations.meanleaf(canopy, phiPu, 'angles_and_layers', Ps); % total photochemical fluorescence yield
+    elecFluo.KnTot = Fc * Knh + equations.meanleaf(canopy, Knu, 'angles_and_layers', Ps); % total non-photochemical fluorescence yield
+    elecFluo.KpTot = Fc * Kph + equations.meanleaf(canopy, Kpu, 'angles_and_layers', Ps);   
+    elecFluo.NPQTot = Fc * NPQh + equations.meanleaf(canopy, NPQu, 'angles_and_layers', Ps);
+    elecFluo.SIFTot = Fc * SIFh + equations.meanleaf(canopy, SIFu, 'angles_and_layers', Ps);
+    elecFluo.qETot = Fc * qEh + equations.meanleaf(canopy, qEu, 'angles_and_layers', Ps);
+    elecFluo.qQTot = Fc * qQh + equations.meanleaf(canopy, qQu, 'angles_and_layers', Ps);
+    elecFluo.fo0Tot  = Fc * fo0h + equations.meanleaf(canopy, fo0u, 'angles_and_layers', Ps);
+    elecFluo.fm0Tot  = Fc * fm0h + equations.meanleaf(canopy, fm0u, 'angles_and_layers', Ps);
+    elecFluo.foTot = Fc * foh + equations.meanleaf(canopy, fou, 'angles_and_layers', Ps);
+    elecFluo.fmTot = Fc * fmh + equations.meanleaf(canopy, fmu, 'angles_and_layers', Ps);
+    elecFluo.Fm_FoTot = Fc * Fm_Foh + equations.meanleaf(canopy, Fm_Fou, 'angles_and_layers', Ps);
+    elecFluo.Ft_FoTot = Fc * Ft_Foh + equations.meanleaf(canopy, Ft_Fou, 'angles_and_layers', Ps);
+    elecFluo.etaTot = Fc * Fh + equations.meanleaf(canopy, Fu, 'angles_and_layers', Ps);
+    elecFluo.phiFTot = Fc * phiFh + equations.meanleaf(canopy, phiFu, 'angles_and_layers', Ps);
+    elecFluo.co2PerElecTot = Fc * co2PerElech + equations.meanleaf(canopy, co2PerElecu, 'angles_and_layers', Ps);
+    elecFluo.VcTot = Fc * Vch + equations.meanleaf(canopy, Vcu, 'angles_and_layers', Ps);
+    elecFluo.VeTot = Fc * Veh + equations.meanleaf(canopy, Veu, 'angles_and_layers', Ps);
+    elecFluo.VsTot = Fc * Vsh + equations.meanleaf(canopy, Vsu, 'angles_and_layers', Ps);
+    elecFluo.gsTot = Fc * gsh + equations.meanleaf(canopy, gsu, 'angles_and_layers', Ps);
+    elecFluo.CiTot = Fc * Cih + equations.meanleaf(canopy, Ciu, 'angles_and_layers', Ps);
+
+
     if options.plantHydraulics
         RWU = rootWaterUptake;
     else 
@@ -720,5 +792,5 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
 
     WaterStressFactor.soil = sfactor;
     WaterStressFactor.plant = phwsf;
-    WaterPotential.leaf = PSI;
+    WaterPotential.leaf = psiLeaf;
 end

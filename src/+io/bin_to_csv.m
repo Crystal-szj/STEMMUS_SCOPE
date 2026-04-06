@@ -48,14 +48,22 @@ function bin_to_csv(fnames, n_col, ns, options, SoilLayer, GroundwaterSettings)
     write_output(Sim_Temp_names, Sim_Temp_units, fnames.Sim_Temp_file, n_col.Sim_Temp, ns, true);
 
     %% Water stress factor
-    waterStressFactor_names = {'simulation_number', 'year', 'DoY', 'soilWaterStressFactor'};
-    waterStressFactor_units = {'', '', '', '-'};
+    waterStressFactor_names = {'simulation_number', 'year', 'DoY', 'soilWaterStressFactor', 'plantWaterStressFactor'};
+    waterStressFactor_units = {'', '', '', '-', '-'};
     write_output(waterStressFactor_names, waterStressFactor_units, fnames.waterStressFactor_file, n_col.waterStressFactor, ns);
 
     %% Leaf water potential
     waterPotential_names = {'simulation_number', 'year', 'DoY', 'leafWaterPotential'};
     waterPotential_units = {'', '', '', 'm'};
     write_output(waterPotential_names, waterPotential_units, fnames.waterPotential_file, n_col.waterPotential, ns);
+
+    %% electron transport MLROC 
+    electronTransport_names = {'simulation_number','year', 'DoY', 'JaTot', 'phiPsiiTot', 'KnTot', 'KpTot', 'NPQTot', 'phiFTot', 'SIFTot',...
+                                'qETot', 'qQTot', 'fo0Tot', 'fm0Tot', 'foTot', 'fmTot', 'Fm_FoTot', 'Ft_FoTot', 'eta', 'CO2_per_electronTot', ...
+                                'VcTot', 'VeTot', 'VsTot', 'gsTot', 'CiTot'};
+    electronTransport_units = {'', '', '', 'umol m-2 s-1', '', '', '', '', '', 'umol m-2 s-1', '', '', '', '', '', '', '', '', '', '', ...
+                               'umol m-2 s-1', 'umol m-2 s-1', 'umol m-2 s-1', 'mol m-2 s-1', 'ppm'};
+    write_output(electronTransport_names, electronTransport_units, fnames.electronTransport_file, n_col.electronTransport, ns);
 
     %% Soil matric potential
     Sim_hh_names = [depth; thickness];
@@ -94,15 +102,15 @@ function bin_to_csv(fnames, n_col, ns, options, SoilLayer, GroundwaterSettings)
     %% Spectrum (added on 19 September 2008)
     spectrum_hemis_optical_names = {'hemispherically integrated radiation spectrum'};
     spectrum_hemis_optical_units = {'W m-2 um-1'};
-    write_output(spectrum_hemis_optical_names, spectrum_hemis_optical_units, fnames.spectrum_hemis_optical_file, n_col.spectrum_hemis_optical, ns, true);
+    % write_output(spectrum_hemis_optical_names, spectrum_hemis_optical_units, fnames.spectrum_hemis_optical_file, n_col.spectrum_hemis_optical, ns, true);
 
     spectrum_obsdir_optical_names = {'radiance spectrum in observation direction'};
     spectrum_obsdir_optical_units = {'W m-2 sr-1 um-1'};
-    write_output(spectrum_obsdir_optical_names, spectrum_obsdir_optical_units, fnames.spectrum_obsdir_optical_file, n_col.spectrum_obsdir_optical, ns, true);
+    % write_output(spectrum_obsdir_optical_names, spectrum_obsdir_optical_units, fnames.spectrum_obsdir_optical_file, n_col.spectrum_obsdir_optical, ns, true);
 
     if options.calc_ebal
-        write_output({'thermal BlackBody emission spectrum in observation direction'}, {'W m-2 sr-1 um-1'}, ...
-                     fnames.spectrum_obsdir_BlackBody_file, n_col.spectrum_obsdir_BlackBody, ns, true);
+        % write_output({'thermal BlackBody emission spectrum in observation direction'}, {'W m-2 sr-1 um-1'}, ...
+        %              fnames.spectrum_obsdir_BlackBody_file, n_col.spectrum_obsdir_BlackBody, ns, true);
         if options.calc_planck
             write_output({'thermal emission spectrum in hemispherical direction'}, {'W m-2 sr-1 um-1'}, ...
                          fnames.spectrum_hemis_thermal_file, n_col.spectrum_hemis_thermal, ns, true);
@@ -110,10 +118,10 @@ function bin_to_csv(fnames, n_col, ns, options, SoilLayer, GroundwaterSettings)
                          fnames.spectrum_obsdir_thermal_file, n_col.spectrum_obsdir_thermal, ns, true);
         end
     end
-    write_output({'irradiance'}, {'W m-2 um-1'}, ...
-                 fnames.irradiance_spectra_file, n_col.irradiance_spectra, ns, true);
-    write_output({'reflectance'}, {'fraction of radiation in observation direction *pi / irradiance'}, ...
-                 fnames.reflectance_file, n_col.reflectance, ns, true);
+    % write_output({'irradiance'}, {'W m-2 um-1'}, ...
+    %              fnames.irradiance_spectra_file, n_col.irradiance_spectra, ns, true);
+    % write_output({'reflectance'}, {'fraction of radiation in observation direction *pi / irradiance'}, ...
+    %              fnames.reflectance_file, n_col.reflectance, ns, true);
     %% input and parameter values (added June 2012)
     % write_output(fnames.pars_and_input_file, true)
     % write_output(fnames.pars_and_input_short_file, true)
@@ -167,8 +175,8 @@ function bin_to_csv(fnames, n_col, ns, options, SoilLayer, GroundwaterSettings)
         write_output({'TOC fluorescence contribution from from leaves and soil after scattering for wavelenghts of 640 to 850 nm, with 1 nm resolution'}, {'W m-2 um-1 sr-1'}, ...
                      fnames.fluorescence_scattered_file, n_col.fluorescence_scattered, ns, true);
     end
-    write_output({'Bottom of canopy irradiance in the shaded fraction, and average BOC irradiance'}, {'First 2162 columns: shaded fraction. Last 2162 columns: average BOC irradiance. Unit: Wm-2 um-1'}, ...
-                 fnames.BOC_irradiance_file, n_col.BOC_irradiance, ns, true);
+    % write_output({'Bottom of canopy irradiance in the shaded fraction, and average BOC irradiance'}, {'First 2162 columns: shaded fraction. Last 2162 columns: average BOC irradiance. Unit: Wm-2 um-1'}, ...
+    %              fnames.BOC_irradiance_file, n_col.BOC_irradiance, ns, true);
 
     fclose('all');
 
