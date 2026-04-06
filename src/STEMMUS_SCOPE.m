@@ -16,7 +16,7 @@
 %
 %     You should have received a copy of the GNU General Public License
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-clear all; clc;
+% clear all; clc;
 % Load in required Octave packages if STEMMUS-SCOPE is being run in Octave:
 if exist('OCTAVE_VERSION', 'builtin') ~= 0
     disp('Loading Octave packages...');
