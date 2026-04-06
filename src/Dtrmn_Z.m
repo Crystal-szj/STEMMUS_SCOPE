@@ -3,7 +3,8 @@ function [DeltZ, DeltZ_R, NL, ML] = Dtrmn_Z(NL, Tot_Depth)
         The determination of the element length
     %}
     Elmn_Lnth = 0;
-    sitename = 'CH-HTC';
+    % #Todo: Now, the soil total depth is set to be 100 cm for all sites. This part needs to be revised when the soil depth is different for different sites.
+    sitename = 'CH-HTC'; 
     if strcmp(sitename,'CH-HTC')
         for ML=1:6
             DeltZ_R(ML)=1;%4
