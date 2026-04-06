@@ -308,7 +308,7 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
         
         Jah                 = biochem_out.Ja;
         phiPh               = biochem_out.ps;
-        phiFh               = biochem_out.fs;
+        fsh                 = biochem_out.fs;
         qQh                 = biochem_out.qQ;
         gsh                 = biochem_out.gs;
         Vch                 = biochem_out.Vc;
@@ -357,7 +357,7 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
 
         Jau                 = biochem_out.Ja;
         phiPu               = biochem_out.ps;
-        phiFu               = biochem_out.fs;
+        fsu                 = biochem_out.fs;
         qQu                 = biochem_out.qQ;
         gsu                 = biochem_out.gs;
         Vcu                 = biochem_out.Vc;
@@ -749,7 +749,7 @@ function [iter, fluxes, rad, thermal, profiles, soil, RWU, frac, WaterStressFact
     elecFluo.Fm_FoTot = Fc * Fm_Foh + equations.meanleaf(canopy, Fm_Fou, 'angles_and_layers', Ps);
     elecFluo.Ft_FoTot = Fc * Ft_Foh + equations.meanleaf(canopy, Ft_Fou, 'angles_and_layers', Ps);
     elecFluo.etaTot = Fc * Fh + equations.meanleaf(canopy, Fu, 'angles_and_layers', Ps);
-    elecFluo.phiFTot = Fc * phiFh + equations.meanleaf(canopy, phiFu, 'angles_and_layers', Ps);
+    elecFluo.fsTot = Fc * fsh + equations.meanleaf(canopy, fsu, 'angles_and_layers', Ps);
     elecFluo.co2PerElecTot = Fc * co2PerElech + equations.meanleaf(canopy, co2PerElecu, 'angles_and_layers', Ps);
     elecFluo.VcTot = Fc * Vch + equations.meanleaf(canopy, Vcu, 'angles_and_layers', Ps);
     elecFluo.VeTot = Fc * Veh + equations.meanleaf(canopy, Veu, 'angles_and_layers', Ps);
